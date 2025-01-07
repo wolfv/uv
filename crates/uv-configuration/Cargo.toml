@@ -46,3 +46,4 @@ anyhow = { workspace = true }
 
 [features]
 default = []
+no-init-rayon = []
