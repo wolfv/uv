@@ -14,7 +14,9 @@ pub static RAYON_PARALLELISM: AtomicUsize = AtomicUsize::new(0);
 
 /// Initialize the threadpool lazily. Always call before using rayon the potentially first time.
 pub static RAYON_INITIALIZE: LazyLock<()> = LazyLock::new(|| {
-    let _ = rayon::ThreadPoolBuilder::new()
+    #[cfg(not(feature = "no-init-rayon"))]
+    rayon::ThreadPoolBuilder::new()
         .num_threads(RAYON_PARALLELISM.load(Ordering::SeqCst))
-        .build_global();
+        .build_global()
+        .expect("failed to initialize global rayon pool");
 });
